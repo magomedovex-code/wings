@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "mago.darkwings.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "darkwings-refmap.json",
+  "client": [
+    "ElytraFeatureRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

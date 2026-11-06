@@ -1,0 +1,48 @@
+name: build
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.2.1"
+
+      - name: Build
+        run: gradle build --no-daemon
+
+      - name: Remove sources jar
+        run: |
+          rm -f build/libs/*-sources.jar
+          mkdir -p release && cp build/libs/*.jar release/darkwings.jar
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: darkwings-mod
+          path: build/libs/*.jar
+
+      - name: Publish release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: DarkWings (Fabric 1.21.11)
+          body: |
+            Скачай `darkwings.jar` и положи в `.minecraft/mods` вместе с Fabric API для 1.21.11.
+            В игре нажми **O** — откроется меню выбора крыльев.
+          files: release/darkwings.jar
+          make_latest: true

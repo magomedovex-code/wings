@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "darkwings",
+  "version": "${version}",
+  "name": "DarkWings",
+  "description": "Тёмные 3D-крылья вместо элитры: дракон, летучая мышь, демон, пустота, ворон, падший ангел. Взмахи в полёте. Меню выбора — клавиша O.",
+  "authors": ["Mago"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["mago.darkwings.DarkWingsClient"]
+  },
+  "mixins": ["darkwings.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.18.0",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
