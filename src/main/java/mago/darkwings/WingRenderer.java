@@ -68,21 +68,30 @@ public final class WingRenderer {
         return stack != null && stack.isOf(Items.ELYTRA);
     }
 
-    /** @return true — крылья нарисованы, ванильную элитру надо отменить */
-    public static boolean tryRender(MatrixStack matrices, OrderedRenderCommandQueue queue, int light,
-                                    BipedEntityRenderState state) {
+    /** Будут ли у этого игрока/моба нарисованы наши крылья (нужно и для скрытия плаща). */
+    public static boolean wingsVisible(BipedEntityRenderState state) {
         WingConfig cfg = WingConfig.get();
         WingStyle style = cfg.style();
         if (style == WingStyle.VANILLA || style.geo == null) return false;
-
         MinecraftClient client = MinecraftClient.getInstance();
         boolean self = state instanceof PlayerEntityRenderState ps
                 && client.player != null && ps.id == client.player.getId();
         boolean elytra = hasElytra(state.equippedChestStack);
         boolean preview = self && DarkWingsClient.previewActive;
-
         if (!self && cfg.onlyMe) return false;                       // у других — обычная элитра
-        if (!elytra && !(self && (cfg.alwaysShow || preview))) return false;
+        return elytra || (self && (cfg.alwaysShow || preview));
+    }
+
+    /** @return true — крылья нарисованы, ванильную элитру надо отменить */
+    public static boolean tryRender(MatrixStack matrices, OrderedRenderCommandQueue queue, int light,
+                                    BipedEntityRenderState state) {
+        if (!wingsVisible(state)) return false;
+        WingConfig cfg = WingConfig.get();
+        WingStyle style = cfg.style();
+        MinecraftClient client = MinecraftClient.getInstance();
+        boolean self = state instanceof PlayerEntityRenderState ps
+                && client.player != null && ps.id == client.player.getId();
+        boolean preview = self && DarkWingsClient.previewActive;
 
         // насколько раскрыты (0 — сложены, 1 — полёт). Берём из ванильной анимации элитры,
         // поэтому раскрытие плавное, а при пикировании крылья сами прижимаются.

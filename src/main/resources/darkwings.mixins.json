@@ -5,7 +5,8 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "darkwings-refmap.json",
   "client": [
-    "ElytraFeatureRendererMixin"
+    "ElytraFeatureRendererMixin",
+    "CapeFeatureRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

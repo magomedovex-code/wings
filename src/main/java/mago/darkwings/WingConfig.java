@@ -26,6 +26,8 @@ public final class WingConfig {
     public boolean glow = true;
     /** показывать твои крылья даже без элитры (просто украшение) */
     public boolean alwaysShow = false;
+    /** прятать плащ, когда видны крылья */
+    public boolean hideCape = true;
 
     public WingStyle style() {
         return WingStyle.byId(style);

@@ -50,7 +50,7 @@ public class WingScreen extends Screen {
     private int descY;
 
     private final List<ButtonWidget> styleButtons = new ArrayList<>();
-    private ButtonWidget spreadButton, autoButton, whoButton, glowButton, alwaysButton;
+    private ButtonWidget spreadButton, autoButton, whoButton, glowButton, alwaysButton, capeButton;
 
     public WingScreen() {
         super(Text.literal("DarkWings"));
@@ -95,7 +95,7 @@ public class WingScreen extends Screen {
 
         // --- низ: переключатели ---
         int by = py + ph - 26;
-        int tw = (lw + rw + 14 - 70 - 3 * 4) / 3;
+        int tw = (lw + rw + 14 - 70 - 4 * 4) / 4;
         whoButton = addDrawableChild(ButtonWidget.builder(Text.empty(), b -> {
             cfg().onlyMe = !cfg().onlyMe;
             WingConfig.save();
@@ -111,6 +111,11 @@ public class WingScreen extends Screen {
             WingConfig.save();
             refresh();
         }).dimensions(lx + 2 * (tw + 4), by, tw, 18).build());
+        capeButton = addDrawableChild(ButtonWidget.builder(Text.empty(), b -> {
+            cfg().hideCape = !cfg().hideCape;
+            WingConfig.save();
+            refresh();
+        }).dimensions(lx + 3 * (tw + 4), by, tw, 18).build());
         addDrawableChild(ButtonWidget.builder(Text.literal("Готово"), b -> close())
                 .dimensions(px + pw - 10 - 66, by, 66, 18).build());
 
@@ -154,7 +159,8 @@ public class WingScreen extends Screen {
             WingStyle s = all[i];
             styleButtons.get(i).setMessage(Text.literal(s == cur ? "▶ " + s.title + " ◀" : s.title));
         }
-        whoButton.setMessage(Text.literal(cfg().onlyMe ? "Видно: только мне" : "Видно: у всех"));
+        whoButton.setMessage(Text.literal(cfg().onlyMe ? "Видно: мне" : "Видно: всем"));
+        capeButton.setMessage(Text.literal(cfg().hideCape ? "Плащ: скрыт" : "Плащ: виден"));
         glowButton.setMessage(Text.literal(cfg().glow ? "Свечение: вкл" : "Свечение: выкл"));
         glowButton.active = cur.hasGlow;
         alwaysButton.setMessage(Text.literal(cfg().alwaysShow ? "Без элитры: да" : "Без элитры: нет"));
