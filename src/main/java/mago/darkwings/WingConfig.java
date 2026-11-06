@@ -15,7 +15,7 @@ public final class WingConfig {
     private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("darkwings.json");
     private static WingConfig INSTANCE;
 
-    public String style = "dragon";
+    public String style = "blood";
     /** размер крыльев, 0.6 … 1.5 */
     public float size = 1.0F;
     /** скорость взмахов, 0.4 … 2.0 */

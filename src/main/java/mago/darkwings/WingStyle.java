@@ -4,6 +4,7 @@ import net.minecraft.util.Identifier;
 
 public enum WingStyle {
     VANILLA("vanilla", "Обычная элитра", "Ванильная элитра, без изменений", null, 1.0F, 0xFF8A8FA3, 0xFF5B6075, false),
+    BLOOD("blood", "Кровавый дракон", "Массивные кости, рог сверху, рваный светящийся край", Geo.BLOOD, 1.0F, 0xFF9A1010, 0xFF1A0405, true),
     DRAGON("dragon", "Тёмный дракон", "Перепонки с прожилками, когти на пальцах", Geo.DRAGON, 1.0F, 0xFF2C1A3C, 0xFF120C18, false),
     BAT("bat", "Летучая мышь", "Лёгкие кожистые крылья с зубчатым краем", Geo.BAT, 0.95F, 0xFF3A2E30, 0xFF1C1618, false),
     DEMON("demon", "Демон", "Тёмно-красные, светящиеся жилы", Geo.DRAGON, 1.05F, 0xFF4A0B0D, 0xFFFF3A1A, true),
@@ -11,7 +12,7 @@ public enum WingStyle {
     RAVEN("raven", "Ворон", "Чёрные перья с синим отливом", Geo.FEATHER, 0.9F, 0xFF161C2C, 0xFF05060A, false),
     FALLEN("fallen", "Падший ангел", "Тёмно-серые перья, концы светятся", Geo.FEATHER, 1.0F, 0xFF34333A, 0xFF8A5CFF, true);
 
-    public enum Geo { DRAGON, BAT, FEATHER }
+    public enum Geo { DRAGON, BAT, FEATHER, BLOOD }
 
     public final String id;
     public final String title;
@@ -38,6 +39,6 @@ public enum WingStyle {
 
     public static WingStyle byId(String id) {
         for (WingStyle s : values()) if (s.id.equals(id)) return s;
-        return DRAGON;
+        return BLOOD;
     }
 }

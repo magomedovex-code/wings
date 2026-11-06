@@ -45,6 +45,7 @@ public final class WingRenderer {
             switch (g) {
                 case BAT -> { data = WingModels.bat(); rig = WingModels.BAT_RIG; }
                 case FEATHER -> { data = WingModels.feather(); rig = WingModels.FEATHER_RIG; }
+                case BLOOD -> { data = WingModels.blood(); rig = WingModels.BLOOD_RIG; }
                 default -> { data = WingModels.dragon(); rig = WingModels.DRAGON_RIG; }
             }
             ModelPart model = data.createModel();

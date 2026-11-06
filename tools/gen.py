@@ -74,15 +74,16 @@ def scallop(p0, p1, n, depth, toward):
 
 
 # ------------------------------------------------ перепончатые (дракон / летучая мышь)
-def membrane_wing(name, arm, fore, fingers, spread, scal, claws, fold_fingers):
+def membrane_wing(name, arm, fore, fingers, spread, scal, claws, fold_fingers, thick=1.0, hook=False):
     S = DENS
+    T = thick
     arm *= S; fore *= S
     fingers = [f * S for f in fingers]
     root = Part("root", rig=dict(fold=(0, -0.22, 1.25), spread=(0, -0.08, -0.12), flap=(0.48, 0.0, 0.10)))
-    a = root.add(Part("arm", (0, 0, 0), [bone(0, -1.2 * S / 2, -1.2 * S / 2, arm, 1.2 * S, 1.2 * S)]))
-    f = a.add(Part("fore", (arm, 0, 0), [bone(0, -0.9 * S / 2, -0.9 * S / 2, fore, 0.9 * S, 0.9 * S)],
+    a = root.add(Part("arm", (0, 0, 0), [bone(0, -1.2 * T * S / 2, -1.2 * T * S / 2, arm, 1.2 * T * S, 1.2 * T * S)]))
+    f = a.add(Part("fore", (arm, 0, 0), [bone(0, -0.9 * T * S / 2, -0.9 * T * S / 2, fore, 0.9 * T * S, 0.9 * T * S)],
                    rig=dict(fold=(0, 0.05, -2.35), spread=(0, 0, 0.12), flap=(0.30, 0.7, 0))))
-    h = f.add(Part("hand", (fore, 0, 0), [bone(-0.8 * S, -0.8 * S, -0.8 * S, 1.6 * S, 1.6 * S, 1.6 * S, "bone")],
+    h = f.add(Part("hand", (fore, 0, 0), [bone(-0.8 * T * S, -0.8 * T * S, -0.8 * T * S, 1.6 * T * S, 1.6 * T * S, 1.6 * T * S, "bone")],
                    rig=dict(fold=(0, 0, 0.0), spread=(0, 0, 0.0), flap=(0.22, 1.2, 0))))
     if claws:
         # коготь большого пальца на «запястье»
@@ -90,10 +91,21 @@ def membrane_wing(name, arm, fore, fingers, spread, scal, claws, fold_fingers):
         # шип на локте
         f.boxes.append(bone(-0.4 * S, -2.2 * S, -0.4 * S, 0.8 * S, 1.6 * S, 0.8 * S, "claw"))
 
+    if hook:
+        # большой загнутый рог-коготь на верхушке крыла (запястье), как у драконов
+        hk = f.add(Part("hook", (fore - 0.4 * S, -0.6 * T * S, 0), [
+            bone(-0.7 * T * S, -5.5 * S, -0.7 * T * S, 1.4 * T * S, 5.5 * S, 1.4 * T * S, "bone"),
+        ]))
+        hk.add(Part("hooktip", (0, -5.5 * S, 0), [
+            bone(-0.5 * T * S, -0.5 * T * S, -0.5 * T * S, 3.2 * S, 1.0 * T * S, 1.0 * T * S, "bone"),
+        ]))
+        # коготь на локте вниз
+        a.boxes.append(bone(arm - 0.6 * S, 0.4 * T * S, -0.5 * T * S, 1.0 * T * S, 2.4 * S, 1.0 * T * S, "bone"))
+
     # пальцы веером
     fparts = []
     for i, (L, ang) in enumerate(zip(fingers, spread)):
-        th = (0.55 - 0.1 * i) * S
+        th = (0.55 - 0.1 * i) * S * T
         p = h.add(Part(f"f{i}", (0, 0, 0.03 * i * S), [bone(0, -th / 2, -th / 2, L, th, th)],
                        rig=dict(fold=(0, 0, fold_fingers[i]), spread=(0, 0, ang), flap=(0, 0, 0))))
         if claws:
@@ -108,7 +120,7 @@ def membrane_wing(name, arm, fore, fingers, spread, scal, claws, fold_fingers):
         edge = scallop((Li, 0), tip_n, scal[0], scal[1] * S, (0, 0))
         poly = [(0, 0)] + edge
         m = fparts[i].add(Part(f"m{i}", (0, 0, 0),
-                               [plane_from_poly(poly, 0.05 * S, "mem", dict(vein_origin=(0, 0)))],
+                               [plane_from_poly(poly, 0.05 * S, "mem", dict(vein_origin=(0, 0), rim=edge))],
                                rig=dict(sy=("gap", f"f{i}", f"f{i + 1}", gap))))
 
     # перепонка «предплечье -> последний палец -> тело»
@@ -122,9 +134,9 @@ def membrane_wing(name, arm, fore, fingers, spread, scal, claws, fold_fingers):
     # часть под предплечьем (x >= -1)
     polyF_clip = clip_poly_x(polyF, -1.0 * S, keep="right")
     polyA_clip = clip_poly_x([(px + arm, py) for px, py in polyF], arm + 1.0 * S, keep="left")
-    f.add(Part("mf", (0, 0, 0), [plane_from_poly(polyF_clip, -0.05 * S, "mem", dict(vein_origin=(fore, 0)))],
+    f.add(Part("mf", (0, 0, 0), [plane_from_poly(polyF_clip, -0.05 * S, "mem", dict(vein_origin=(fore, 0), rim=edge))],
                rig=dict(sy=(0.30, 1.0))))
-    a.add(Part("ma", (0, 0, 0), [plane_from_poly(polyA_clip, -0.06 * S, "mem", dict(vein_origin=(0, 0)))],
+    a.add(Part("ma", (0, 0, 0), [plane_from_poly(polyA_clip, -0.06 * S, "mem", dict(vein_origin=(0, 0), rim=[(px + arm, py) for px, py in edge]))],
                rig=dict(sy=(0.22, 1.0))))
     return root
 
@@ -228,6 +240,10 @@ GEOS = {
                          spread=[-0.20, 0.35, 0.85, 1.35], scal=(3, 2.4), claws=False,
                          fold_fingers=[2.30, 2.50, 2.70, 2.90]),
     "feather": feather_wing(),
+    # массивные «кровавые» крылья: толстые кости, рог сверху, рваный край
+    "blood": membrane_wing("blood", arm=7, fore=10, fingers=[17, 16, 14],
+                           spread=[-0.15, 0.55, 1.25], scal=(4, 1.6), claws=False,
+                           fold_fingers=[2.35, 2.62, 2.90], thick=2.4, hook=True),
 }
 
 
@@ -277,6 +293,8 @@ STYLES = {
                              bone="#0e0404", bone_hi="#3a1010", claw="#1a0a0a"), "#ff3a1a"),
     "void": ("dragon", dict(mem0="#030207", mem1="#0f0a1c", vein="#000000", rim="#2a1650",
                             bone="#020104", bone_hi="#1b1030", claw="#0c0618"), "#b44dff"),
+    "blood": ("blood", dict(mem0="#9a1010", mem1="#1a0405", vein="#0c0202", rim="#ff2a2a",
+                            bone="#1e1414", bone_hi="#4a3434", claw="#120a0a", mode="blood"), "#ff2020"),
     "raven": ("feather", dict(f0="#05060a", f1="#161c2c", shaft="#2c3550", edge="#26304a",
                               cov0="#090b12", cov1="#1d2538", bone="#07080c", bone_hi="#1a1f2c"), None),
     "fallen": ("feather", dict(f0="#0b0b0d", f1="#34333a", shaft="#55525e", edge="#4a4752",
@@ -295,12 +313,98 @@ def poly_mask(w, h, poly, ss=4):
     return m
 
 
+def edges_of(mask):
+    return mask & ~np.roll(mask, 1, 0) | mask & ~np.roll(mask, -1, 0) | \
+        mask & ~np.roll(mask, 1, 1) | mask & ~np.roll(mask, -1, 1)
+
+
+def bone_outline(img, gl, b, P, G):
+    """Светящаяся обводка по краям каждой грани кости (как на картинке с красным контуром)."""
+    u, v, dx, dy, dz = b.u, b.v, b.dx, b.dy, b.dz
+    faces = [(u + dz, v, dx, dz), (u + dz + dx, v, dx, dz), (u, v + dz, dz, dy),
+             (u + dz, v + dz, dx, dy), (u + dz + dx, v + dz, dz, dy), (u + 2 * dz + dx, v + dz, dx, dy)]
+    H, W = img.shape[:2]
+    for fx, fy, fw, fh in faces:
+        x0, y0 = int(round(fx)), int(round(fy))
+        x1, y1 = int(round(fx + fw)) - 1, int(round(fy + fh)) - 1
+        if x1 < x0 or y1 < y0:
+            continue
+        for xx in range(x0, x1 + 1):
+            for yy in (y0, y1):
+                if 0 <= yy < H and 0 <= xx < W:
+                    img[yy, xx] = P["claw"]
+        for yy in range(y0, y1 + 1):
+            for xx in (x0, x1):
+                if 0 <= yy < H and 0 <= xx < W:
+                    img[yy, xx] = P["claw"]
+
+
+def paint_blood(img, gl, b, mask, P, G, rnd):
+    h, w = mask.shape
+    # рваный пиксельный край: выкусываем блоки 2x2 у края
+    m = mask.copy()
+    if h > 1:
+        m[0, :] |= m[1, :]              # перепонка вплотную к кости, без щели
+    rp0 = [(px - b.x, py - b.y) for px, py in b.extra.get("rim", [])]
+    rpa = np.array(rp0) if rp0 else None
+    e = edges_of(m)
+    ys, xs = np.nonzero(e)
+    for yy, xx in zip(ys, xs):
+        if rpa is not None and np.min(np.hypot(rpa[:, 0] - xx, rpa[:, 1] - yy)) > 2.5:
+            continue                    # рвём только внешний край
+        if rnd.random() < 0.18:
+            m[yy:yy + 2, xx:xx + 2] = False
+    e = edges_of(m)
+    e2 = e | edges_of(m & ~e)          # кромка шириной 2 пикселя
+    rim_pts = [(px - b.x, py - b.y) for px, py in b.extra.get("rim", [])]
+    if rim_pts:
+        rp = np.array(rim_pts)
+        yy_, xx_ = np.nonzero(e2)
+        for yy, xx in zip(yy_, xx_):
+            dmin = np.min(np.hypot(rp[:, 0] - (xx + 0.5), rp[:, 1] - (yy + 0.5)))
+            if dmin > 3.2:
+                e2[yy, xx] = False      # вдоль кости кромку не рисуем — только по внешнему рваному краю
+    ox, oy = b.extra.get("vein_origin", (0, 0))
+    ox -= b.x; oy -= b.y
+    # тёмные полосы-жилы, расходящиеся из корня пальца
+    streak = np.zeros_like(m)
+    base_ang = math.atan2(h * 0.6 - oy, w * 0.55 - ox)
+    for i in range(4):
+        ang = base_ang + (i - 1.5) * 0.28 + rnd.uniform(-0.05, 0.05)
+        x, y = ox, oy
+        for s in range(int(max(w, h) * 1.6)):
+            ang += rnd.uniform(-0.05, 0.05)
+            x += math.cos(ang); y += math.sin(ang)
+            for k in (0, 1):
+                xi, yi = int(x + k * math.sin(ang)), int(y - k * math.cos(ang))
+                if 0 <= xi < w and 0 <= yi < h:
+                    streak[yi, xi] = True
+    maxd = max(1.0, max(math.hypot(xx - ox, yy - oy) for yy, xx in zip(*np.nonzero(m))) if m.any() else 1.0)
+    for yy in range(h):
+        for xx in range(w):
+            if not m[yy, xx]:
+                continue
+            d = math.hypot(xx - ox, yy - oy) / maxd
+            c = lerp(P["mem1"], P["mem0"], min(1.0, d ** 1.3))      # у кости тёмное -> к краю красное
+            if streak[yy, xx]:
+                c = lerp(c, P["vein"], 0.55)
+            n = rnd.randint(-3, 3)
+            if e2[yy, xx]:
+                c = P["rim"]
+                gl[b.v + yy, b.u + xx] = (G[0], G[1], G[2], 255)
+            elif d > 0.75 and rnd.random() < 0.05:
+                gl[b.v + yy, b.u + xx] = (G[0] // 3, G[1] // 4, G[2] // 4, 255)
+            img[b.v + yy, b.u + xx] = (max(0, min(255, c[0] + n)), max(0, min(255, c[1] + n)),
+                                       max(0, min(255, c[2] + n)), 255)
+
+
 def paint(geo_name, style, pal, glow):
     W, H = SIZES[geo_name]
     img = np.zeros((H, W, 4), np.uint8)
     gl = np.zeros((H, W, 4), np.uint8)
     rnd = random.Random(hash(style) & 0xffff)
-    P = {k: hexc(v) for k, v in pal.items()}
+    mode = pal.get("mode", "")
+    P = {k: hexc(v) for k, v in pal.items() if k != "mode"}
     G = hexc(glow) if glow else None
     for p in all_parts(GEOS[geo_name]):
         for b in p.boxes:
@@ -317,9 +421,14 @@ def paint(geo_name, style, pal, glow):
                                                    max(0, min(255, c[2] + n)), 255)
                         if G and b.mat == "claw":
                             gl[b.v + yy, b.u + xx] = (G[0] // 2, G[1] // 2, G[2] // 2, 255)
+                if mode == "blood":
+                    bone_outline(img, gl, b, P, G)
                 continue
             w, h = b.dx, b.dy
             mask = poly_mask(w, h, b.poly)
+            if b.mat == "mem" and mode == "blood":
+                paint_blood(img, gl, b, mask, P, G, rnd)
+                continue
             if b.mat == "mem":
                 ox, oy = b.extra.get("vein_origin", (0, 0))
                 ox -= b.x; oy -= b.y

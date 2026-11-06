@@ -161,5 +161,37 @@ public final class WingModels {
             new Rig("p8", 0.0000F, 0.0000F, -1.1200F, 0.0000F, 0.0000F, 0.1800F, 0.0000F, 0.0000F, 0.0000F, null, null, 1F, 1F, 0F)
     };
 
+    public static TexturedModelData blood() {
+        ModelData data = new ModelData();
+        ModelPartData root = data.getRoot();
+        ModelPartData p_root = root.addChild("root", ModelPartBuilder.create(), ModelTransform.origin(0.0000F, 0.0000F, 0.0000F));
+        ModelPartData p_arm = p_root.addChild("arm", ModelPartBuilder.create().uv(68, 28).cuboid(0.0000F, -2.8800F, -2.8800F, 14.0000F, 5.7600F, 5.7600F).uv(110, 28).cuboid(12.8000F, 1.9200F, -2.4000F, 4.8000F, 4.8000F, 4.8000F), ModelTransform.origin(0.0000F, 0.0000F, 0.0000F));
+        ModelPartData p_fore = p_arm.addChild("fore", ModelPartBuilder.create().uv(157, 28).cuboid(0.0000F, -2.1600F, -2.1600F, 20.0000F, 4.3200F, 4.3200F), ModelTransform.origin(14.0000F, 0.0000F, 0.0000F));
+        ModelPartData p_hand = p_fore.addChild("hand", ModelPartBuilder.create().uv(0, 28).cuboid(-3.8400F, -3.8400F, -3.8400F, 7.6800F, 7.6800F, 7.6800F), ModelTransform.origin(20.0000F, 0.0000F, 0.0000F));
+        ModelPartData p_f0 = p_hand.addChild("f0", ModelPartBuilder.create().uv(0, 46).cuboid(0.0000F, -1.3200F, -1.3200F, 34.0000F, 2.6400F, 2.6400F), ModelTransform.origin(0.0000F, 0.0000F, 0.0000F));
+        ModelPartData p_m0 = p_f0.addChild("m0", ModelPartBuilder.create().uv(63, 0).cuboid(0.0000F, 0.0000F, 0.1000F, 34.0000F, 21.0000F, 0.0000F), ModelTransform.origin(0.0000F, 0.0000F, 0.0000F));
+        ModelPartData p_f1 = p_hand.addChild("f1", ModelPartBuilder.create().uv(76, 46).cuboid(0.0000F, -1.0800F, -1.0800F, 32.0000F, 2.1600F, 2.1600F), ModelTransform.origin(0.0000F, 0.0000F, 0.0600F));
+        ModelPartData p_m1 = p_f1.addChild("m1", ModelPartBuilder.create().uv(132, 0).cuboid(0.0000F, 0.0000F, 0.1000F, 32.0000F, 19.0000F, 0.0000F), ModelTransform.origin(0.0000F, 0.0000F, 0.0000F));
+        ModelPartData p_f2 = p_hand.addChild("f2", ModelPartBuilder.create().uv(147, 46).cuboid(0.0000F, -0.8400F, -0.8400F, 28.0000F, 1.6800F, 1.6800F), ModelTransform.origin(0.0000F, 0.0000F, 0.1200F));
+        ModelPartData p_hook = p_fore.addChild("hook", ModelPartBuilder.create().uv(197, 0).cuboid(-3.3600F, -11.0000F, -3.3600F, 6.7200F, 11.0000F, 6.7200F), ModelTransform.origin(19.2000F, -2.8800F, 0.0000F));
+        ModelPartData p_hooktip = p_hook.addChild("hooktip", ModelPartBuilder.create().uv(132, 28).cuboid(-2.4000F, -2.4000F, -2.4000F, 6.4000F, 4.8000F, 4.8000F), ModelTransform.origin(0.0000F, -11.0000F, 0.0000F));
+        ModelPartData p_mf = p_fore.addChild("mf", ModelPartBuilder.create().uv(0, 0).cuboid(-2.0000F, 0.0000F, -0.1000F, 31.0000F, 27.0000F, 0.0000F), ModelTransform.origin(0.0000F, 0.0000F, 0.0000F));
+        ModelPartData p_ma = p_arm.addChild("ma", ModelPartBuilder.create().uv(33, 28).cuboid(-1.0000F, 0.0000F, -0.1200F, 17.0000F, 16.0000F, 0.0000F), ModelTransform.origin(0.0000F, 0.0000F, 0.0000F));
+        return TexturedModelData.of(data, 256, 64);
+    }
+
+    public static final Rig[] BLOOD_RIG = {
+            new Rig("root", 0.0000F, -0.2200F, 1.2500F, 0.0000F, -0.0800F, -0.1200F, 0.4800F, 0.0000F, 0.1000F, null, null, 1F, 1F, 0F),
+            new Rig("fore", 0.0000F, 0.0500F, -2.3500F, 0.0000F, 0.0000F, 0.1200F, 0.3000F, 0.7000F, 0.0000F, null, null, 1F, 1F, 0F),
+            new Rig("hand", 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.2200F, 1.2000F, 0.0000F, null, null, 1F, 1F, 0F),
+            new Rig("f0", 0.0000F, 0.0000F, 2.3500F, 0.0000F, 0.0000F, -0.1500F, 0.0000F, 0.0000F, 0.0000F, null, null, 1F, 1F, 0F),
+            new Rig("m0", 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, "f0", "f1", 1F, 1F, 0.7000F),
+            new Rig("f1", 0.0000F, 0.0000F, 2.6200F, 0.0000F, 0.0000F, 0.5500F, 0.0000F, 0.0000F, 0.0000F, null, null, 1F, 1F, 0F),
+            new Rig("m1", 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, "f1", "f2", 1F, 1F, 0.7000F),
+            new Rig("f2", 0.0000F, 0.0000F, 2.9000F, 0.0000F, 0.0000F, 1.2500F, 0.0000F, 0.0000F, 0.0000F, null, null, 1F, 1F, 0F),
+            new Rig("mf", 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, null, null, 0.3000F, 1.0000F, 0F),
+            new Rig("ma", 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, 0.0000F, null, null, 0.2200F, 1.0000F, 0F)
+    };
+
     private WingModels() {}
 }
