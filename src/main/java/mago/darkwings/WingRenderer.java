@@ -100,7 +100,8 @@ public final class WingRenderer {
         if (sneaking) extraPitch = 0.45F;
 
         Rigged rig = get(style.geo);
-        float k = cfg.size * style.scale / 16F / WingModels.DENS;
+        // ModelPart сам делит координаты на 16, поэтому тут только размер и плотность текстуры
+        float k = cfg.size * style.scale / WingModels.DENS;
         int overlay = OverlayTexture.DEFAULT_UV;
 
         RenderLayer base = RenderLayers.entityCutoutNoCull(style.texture);
